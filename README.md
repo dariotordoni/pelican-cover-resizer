@@ -1,0 +1,1 @@
+This plugin is specifically made for the Pelican [DTheme](https://github.com/dariotordoni/pelican-dtheme). It not offers any kind of flexibility or compatibility with any other theme at the time of writing.
