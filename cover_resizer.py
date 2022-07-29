@@ -10,7 +10,9 @@ from pelican.readers import BaseReader
 def cover_resize(cover_pictures_rel):
     quality_val = 60
     script_dir = os.path.dirname(__file__)
+    print("1")
     print(cover_pictures_rel)
+    print("2")
     script_dir_parent_1 = os.path.dirname(script_dir)
     print(script_dir_parent_1)
     script_dir_parent_2 = os.path.dirname(script_dir_parent_1)
@@ -46,11 +48,11 @@ def cover_resize(cover_pictures_rel):
                         thumb_16x9_ratio : ["16x9", thumb_16x9_width, thumb_16x9_height]
                         }
 
-    for ratio in thumb_ratio_dict.iteritems():
+    for ratio in thumb_ratio_dict.items():
         print(ratio)
         print(ratio[0])
         print(ratio[1])
-        if img_ratio > ratio:
+        if img_ratio > ratio[0]:
             new_width = int(ratio[0] * img_height)
             offset = (img_width - new_width) / 2
             resize = (offset, 0, img_width - offset, img_height)
@@ -60,7 +62,9 @@ def cover_resize(cover_pictures_rel):
             resize = (0, offset, img_width, img_height - offset)
 
         thumb = img.crop(resize).resize((ratio[1][1], ratio[1][2]), Image.ANTIALIAS)
+        # thumb_name = cover_pictures_abs_no_name + "/" + "copertina_" + ratio[1][0] + ".jpg"
         thumb_name_theme_folder = script_dir_parent_2 + "/" + "theme/dt/static/img/" + article_path + "/copertina_" + ratio[1][0] + ".jpg"
+        # thumb.save(thumb_name)
         thumb.save(thumb_name_theme_folder)
     new_name = script_dir_parent_2 + "/" + "theme/dt/static/img/" + article_path + "/copertina.jpg"
     new_name_webp = script_dir_parent_2 + "/" + "theme/dt/static/img/" + article_path + "/copertina.webp"
@@ -70,19 +74,29 @@ def cover_resize(cover_pictures_rel):
     X1_name_webp = script_dir_parent_2 + "/" + "theme/dt/static/img/" + article_path + "/copertinaX1.webp"
     X2_name = script_dir_parent_2 + "/" + "theme/dt/static/img/" + article_path + "/copertinaX2.jpg"
     X2_name_webp = script_dir_parent_2 + "/" + "theme/dt/static/img/" + article_path + "/copertinaX2.webp"
+    # print(new_name_webp)
+    # os.popen('cp cover_pictures_rel new_name')
+    # print(cover_pictures_rel)
+    # os.popen('cwebp -q 80 cover_pictures_rel -o new_name_webp')
+    # img_webp = img.copy()
     img.save(new_name_webp, 'webp', save_all=True, quality=quality_val)
     img.save(new_name, quality=quality_val)
 
     sizeX2 = 1400, 788
     sizeX2_img = img.resize(sizeX2, Image.ANTIALIAS)
+    # img.thumbnail(sizeX2, Image.ANTIALIAS)
     sizeX2_img.save(X2_name, "jpeg", optimize=True, quality=quality_val)
     sizeX2_img.save(X2_name_webp, "webp", optimize=True, quality=quality_val)
+    # os.system('cwebp -q 80 cover_pictures_rel -o new_name_webp')
+    # os.rename(cover_pictures_rel, new_name)
 
     sizeX1 = 700, 394
     sizeX1_img = img.resize(sizeX1, Image.ANTIALIAS)
+    # img.thumbnail(sizeX1, Image.ANTIALIAS)
     sizeX1_img.save(X1_name, "jpeg", optimize=True, quality=quality_val)
     sizeX1_img.save(X1_name_webp, "webp", optimize=True, quality=quality_val)
 
+    # size = 200, 113
     size = 350, 198
     img.thumbnail(size, Image.ANTIALIAS)
     img.save(thumb_name, quality=quality_val)
@@ -101,8 +115,10 @@ class NewReader(BaseReader):
     # some content and the associated metadata.
     def read(self, filename):
         print(filename)
-        filename_encoded = filename.encode("utf-8")
-        filename_splitted = filename_encoded.split("/")
+        #filename_encoded = filename.encode("utf-8")
+        #print(filename_encoded)
+        #filename_splitted = filename_encoded.split("/")
+        filename_splitted = filename.split("/")
         filename_file = filename_splitted[-1]
         filename_splitted.pop()
         filepath = ("/").join(filename_splitted)
@@ -112,7 +128,7 @@ class NewReader(BaseReader):
             print(new_name)
             os.rename(filename, new_name)
         else:
-            print("copertina_raw not found")
+            print("problema")
 
 def add_reader(readers):
     readers.reader_classes['jpg'] = NewReader
